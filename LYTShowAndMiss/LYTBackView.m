@@ -7,6 +7,7 @@
 //
 
 #import "LYTBackView.h"
+static UIView *dissView;
 static LYTBackView *_instance;
 @implementation LYTBackView
 
@@ -25,16 +26,19 @@ static LYTBackView *_instance;
     return [[self alloc] initWithFrame:CGRectMake(0, 0, 375, 667)];
 }
 
-+(void)showWithView:(id)topView{
++(void)showWithView:(UIView *)topView{
     LYTBackView *view = [self shareSingle];
     view.backgroundColor = [UIColor colorWithRed:149/255.0 green:149/255.0 blue:149/255.0 alpha:0.7];
     UIWindow *window = [[[UIApplication sharedApplication]delegate]window];
     [window addSubview:view];
     
-    UIView *view1 = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 375, 667)];
-    view1.alpha = 1;
-    [view addSubview:view1];
-    [view1 addSubview:topView];
+    
+    
+    dissView = [[UIView alloc]initWithFrame:topView.frame];
+    dissView.alpha = 1;
+    [window addSubview:dissView];
+    [dissView addSubview:topView];
+    topView.frame = CGRectMake(0, 0, dissView.frame.size.width, dissView.frame.size.height);
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dissMiss)];
     [view addGestureRecognizer:tapGesture];
@@ -43,8 +47,8 @@ static LYTBackView *_instance;
 +(void)dissMiss{
     LYTBackView *view = [self shareSingle];
     [view removeFromSuperview];
+    [dissView removeFromSuperview];
 }
-
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
